@@ -6,6 +6,7 @@ let tie = false
 
 const gameSquares = document.querySelectorAll(".sqr")
 const gameMessage = document.querySelector("#message")
+const resetBtnEl = document.querySelector("#reset")
 
 const winningCombos = [
     [0, 1, 2],
@@ -31,12 +32,13 @@ const updateBoard = () => {
 
 const updateMessage = () => {
     gameMessage.innerText = ""
-    if ((winner = false) && (tie = false)) {
+    if ((winner === false) && (tie === false)) {
         gameMessage.innerText = `It's Player ${currentTurn}'s turn.`
-    } else if ((winner = false) && (tie = true)) {
+    } else if ((winner === false) && (tie === true)) {
         gameMessage.innerText = "It's a tie! Play again?"
     } else {
         gameMessage.innerText = `Player ${currentTurn} wins! Play again?`
+        // console.log("hello")
     }
 }
 
@@ -66,29 +68,50 @@ init()
 
 const checkForWinner = () => {
     winningCombos.forEach((winningCombo) => {
-       /* if (board[winningCombo[0]] === "") {
+        if (board[winningCombo[0]] === "") {
             return
-     } else*/ if ((board[winningCombo[0]] === board[winningCombo[1]]) && (board[winningCombo[0]] === board[winningCombo[2]])) {
+     } else if ((board[winningCombo[0]] === board[winningCombo[1]]) && (board[winningCombo[0]] === board[winningCombo[2]])) {
             winner = true
             // console.log("winner found")
         }
-        console.log(winner)
+        // console.log(winner)
     })
 }
 
 const checkforTie = () => {
+    if (winner === true) {
+        return
+    } else if (board.includes("")) {
+        // console.log("h")
+        return
+    } else {
+        tie = true
+    }
+}
+
+const switchPlayerTurn = () => {
+    if (winner === true) {
+        return
+    } else if (currentTurn === "X") {
+        currentTurn = "O"
+    } else if (currentTurn === "O") {
+        currentTurn = "X"
+    }
 }
 
 const handleClick = (event) => {
     const squareIndex = event.target.id
     if (winner === true) {
         return
-    } else if ((event.target.innerText == "X") || (event.target.innerText == "O")) {
+    } else if ((event.target.innerText === "X") || (event.target.innerText === "O")) {
         return
     } else {
     placePiece(squareIndex)
     checkForWinner()
+    checkforTie()
+    switchPlayerTurn()
     }
+    render()
 }
 
 // ------------------------------------------------------------------------------------------ //
@@ -96,3 +119,4 @@ const handleClick = (event) => {
 gameSquares.forEach((gameSquare) => {
     gameSquare.addEventListener("click", handleClick)
 })
+resetBtnEl.addEventListener("click", init)
